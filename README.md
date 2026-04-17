@@ -1,11 +1,13 @@
 # WayLog CLI
 
-[![GitHub license](https://img.shields.io/github/license/shayne-snap/waylog-cli?style=flat-square)](https://github.com/shayne-snap/waylog-cli/blob/main/LICENSE)
+[![GitHub license](https://img.shields.io/github/license/BeaversLab/waylog-cli?style=flat-square)](https://github.com/BeaversLab/waylog-cli/blob/main/LICENSE)
 ![Rust](https://img.shields.io/badge/built_with-Rust-dca282.svg?style=flat-square)
 
 **Seamlessly sync, preserve, and version-control your AI coding conversations locally.**
 
 WayLog CLI is a lightweight tool written in Rust that automatically saves your AI coding sessions (Claude Code, Gemini CLI, OpenAI Codex CLI) into clean, searchable local Markdown files. Stop losing your context to session timeouts—WayLog CLI helps you own your AI history locally.
+
+This repository is forked from [shayne-snap/waylog-cli](https://github.com/shayne-snap/waylog-cli).
 
 [中文文档](README_zh.md) | [English](README.md)
 
@@ -22,23 +24,28 @@ WayLog CLI is a lightweight tool written in Rust that automatically saves your A
 
 ### Using Homebrew
 
+Works on **Apple Silicon and Intel** Macs (universal binary from the tap):
+
 ```bash
-brew install shayne-snap/tap/waylog
+brew install BeaversLab/tap/waylog
 ```
 
 ### Using Scoop (Windows)
 
 ```powershell
-scoop bucket add waylog https://github.com/shayne-snap/scoop-bucket
+scoop bucket add waylog https://github.com/BeaversLab/scoop-bucket
 scoop install waylog
 ```
 
 ### Using Cargo
 
+Builds from source for **your current CPU** (no cross-architecture surprises if this binary is the one you run):
+
 ```bash
 cargo install waylog
 ```
 
+If zsh reports **`bad CPU type in executable`**, you are usually not running the `cargo`-built binary: another `waylog` (for example from Homebrew) may be earlier in `PATH`, or was built for the other macOS architecture. Check with `which waylog` and `file "$(which waylog)"`, then remove or reorder installs so the architecture matches your Mac.
 
 ## 💡 Usage
 
@@ -85,7 +92,7 @@ waylog pull
 ### Dev build
 
 ```bash
-git clone https://github.com/shayne-snap/waylog-cli.git
+git clone https://github.com/BeaversLab/waylog-cli.git
 cd waylog-cli
 ./scripts/install.sh
 ```
