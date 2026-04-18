@@ -81,7 +81,7 @@ impl Provider for CodexProvider {
         }
 
         // Sort by modification time, newest first
-        candidates.sort_by(|a, b| b.1.cmp(&a.1));
+        candidates.sort_by_key(|b| std::cmp::Reverse(b.1));
 
         Ok(candidates.into_iter().next().map(|(p, _)| p))
     }
@@ -121,7 +121,7 @@ impl Provider for CodexProvider {
         }
 
         // Sort by modification time, newest first
-        candidates.sort_by(|a, b| b.1.cmp(&a.1));
+        candidates.sort_by_key(|b| std::cmp::Reverse(b.1));
 
         Ok(candidates.into_iter().map(|(p, _)| p).collect())
     }
