@@ -4,14 +4,14 @@ use crate::output::Output;
 use std::path::{Path, PathBuf};
 use tracing_subscriber::{fmt, layer::SubscriberExt, EnvFilter};
 
-/// Configuration constants for waylog paths and directories
-/// The name of the waylog project directory (e.g., `.waylog`)
-pub const WAYLOG_DIR: &str = ".waylog";
+/// Configuration constants for chatlog paths and directories
+/// The name of the chatlog project directory (e.g., `.chatlog`)
+pub const CHATLOG_DIR: &str = ".chatlog";
 
-/// The name of the waylog log file
-pub const WAYLOG_LOG_FILE: &str = "waylog.log";
+/// The name of the chatlog log file
+pub const CHATLOG_LOG_FILE: &str = "chatlog.log";
 
-/// Subdirectories within .waylog
+/// Subdirectories within .chatlog
 pub mod subdirs {
     /// History directory for markdown files
     pub const HISTORY: &str = "history";
@@ -34,10 +34,10 @@ pub fn resolve_project_root(command: &Commands, output: &mut Output) -> Result<(
             None => {
                 // Interactive prompt for initialization
                 let current_dir = std::env::current_dir()?;
-                let waylog_path = current_dir.join(WAYLOG_DIR);
+                let chatlog_path = current_dir.join(CHATLOG_DIR);
 
                 output.not_initialized()?;
-                output.init_prompt(&waylog_path)?;
+                output.init_prompt(&chatlog_path)?;
 
                 if dialoguer::Confirm::new()
                     .default(true)
@@ -78,13 +78,13 @@ pub fn setup_logging(project_root: &Path, verbose: bool, quiet: bool) -> Result<
 
     // Build subscriber with conditional layers
     if verbose {
-        let log_dir = project_root.join(WAYLOG_DIR).join(subdirs::LOGS);
+        let log_dir = project_root.join(CHATLOG_DIR).join(subdirs::LOGS);
 
         // Create log directory if it doesn't exist
         std::fs::create_dir_all(&log_dir)?;
 
         // Create file appender (daily rotation)
-        let file_appender = tracing_appender::rolling::daily(log_dir, WAYLOG_LOG_FILE);
+        let file_appender = tracing_appender::rolling::daily(log_dir, CHATLOG_LOG_FILE);
         let (non_blocking, guard) = tracing_appender::non_blocking(file_appender);
 
         // Keep the guard alive for the lifetime of the program

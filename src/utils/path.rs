@@ -1,12 +1,12 @@
-use crate::error::{Result, WaylogError};
-use crate::init::{subdirs, WAYLOG_DIR};
+use crate::error::{Result, ChatlogError};
+use crate::init::{subdirs, CHATLOG_DIR};
 use sha2::{Digest, Sha256};
 use std::path::{Path, PathBuf};
 
 /// Get the home directory in a cross-platform way
 pub fn home_dir() -> Result<PathBuf> {
     home::home_dir()
-        .ok_or_else(|| WaylogError::PathError("Could not find home directory".to_string()))
+        .ok_or_else(|| ChatlogError::PathError("Could not find home directory".to_string()))
 }
 
 /// Get the data directory for AI tools
@@ -60,12 +60,12 @@ pub fn encode_path_gemini(path: &Path) -> String {
     format!("{:x}", hasher.finalize())
 }
 
-/// Get the .waylog/history directory for the current project
-pub fn get_waylog_dir(project_dir: &Path) -> PathBuf {
-    project_dir.join(WAYLOG_DIR).join(subdirs::HISTORY)
+/// Get the .chatlog/history directory for the current project
+pub fn get_chatlog_dir(project_dir: &Path) -> PathBuf {
+    project_dir.join(CHATLOG_DIR).join(subdirs::HISTORY)
 }
 
-/// Find the project root by looking for .waylog folder or .git folder
+/// Find the project root by looking for .chatlog folder or .git folder
 /// moving upwards from the current directory.
 /// If we reach the home directory or the system root without finding a marker,
 /// returns the current directory to avoid treat the whole home as a project.
@@ -74,7 +74,7 @@ pub fn find_project_root() -> Option<PathBuf> {
     let home = home_dir().ok();
 
     for path in current_dir.ancestors() {
-        if path.join(WAYLOG_DIR).is_dir() {
+        if path.join(CHATLOG_DIR).is_dir() {
             return Some(path.to_path_buf());
         }
 
@@ -212,14 +212,14 @@ mod tests {
     }
 
     #[test]
-    fn test_get_waylog_dir() {
+    fn test_get_chatlog_dir() {
         let project_dir = std::env::temp_dir().join("test-project");
-        let waylog_dir = get_waylog_dir(&project_dir);
+        let chatlog_dir = get_chatlog_dir(&project_dir);
 
-        let expected = project_dir.join(".waylog").join("history");
-        assert_eq!(waylog_dir, expected);
+        let expected = project_dir.join(".chatlog").join("history");
+        assert_eq!(chatlog_dir, expected);
         // Check path ends with correct components (platform-independent)
-        assert!(waylog_dir.ends_with(Path::new(".waylog").join("history")));
+        assert!(chatlog_dir.ends_with(Path::new(".chatlog").join("history")));
     }
 
     #[test]
@@ -251,9 +251,9 @@ mod tests {
         let project_root = temp_dir.path().join("project");
         let subdir = project_root.join("subdir").join("deep");
 
-        // Create project root directory and .waylog directory
+        // Create project root directory and .chatlog directory
         fs::create_dir_all(&subdir).unwrap();
-        fs::create_dir_all(project_root.join(".waylog")).unwrap();
+        fs::create_dir_all(project_root.join(".chatlog")).unwrap();
 
         // Save current working directory
         let original_dir = std::env::current_dir().unwrap();
@@ -266,8 +266,8 @@ mod tests {
         assert!(found_root.is_some());
 
         let found = found_root.unwrap();
-        // Verify the found path contains .waylog directory
-        assert!(found.join(".waylog").exists());
+        // Verify the found path contains .chatlog directory
+        assert!(found.join(".chatlog").exists());
         // Compare paths by checking they resolve to the same directory
         // Use file_name to avoid issues with different path representations
         assert_eq!(
@@ -282,7 +282,7 @@ mod tests {
 
     #[test]
     fn test_find_project_root_not_found() {
-        // Create temporary directory but don't create .waylog
+        // Create temporary directory but don't create .chatlog
         let temp_dir = TempDir::new().unwrap();
         let subdir = temp_dir.path().join("subdir");
         fs::create_dir_all(&subdir).unwrap();
@@ -293,10 +293,10 @@ mod tests {
         // Switch to subdirectory
         std::env::set_current_dir(&subdir).unwrap();
 
-        // Should not find project root (not in home directory and no .waylog)
+        // Should not find project root (not in home directory and no .chatlog)
         // Note: This test may behave differently in different environments, depending on temp_dir location
         // If temp_dir is under home directory, find_project_root will stop at home and return None
-        // If not, it will also return None (because .waylog was not found)
+        // If not, it will also return None (because .chatlog was not found)
         let _found_root = find_project_root();
         // In test environment, temp_dir is usually not under home, so should return None
         // But we don't enforce assertion because behavior may vary by environment

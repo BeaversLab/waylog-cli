@@ -1,9 +1,9 @@
 #!/bin/bash
-# WayLog CLI Installation Script
+# ChatLog CLI Installation Script
 
 set -e
 
-echo "🚀 Installing WayLog CLI..."
+echo "🚀 Installing ChatLog CLI..."
 
 # Detect OS
 OS="$(uname -s)"
@@ -29,13 +29,13 @@ INSTALL_DIR="$HOME/.local/bin"
 mkdir -p "$INSTALL_DIR"
 
 # Copy binary
-echo "📋 Installing to $INSTALL_DIR/waylog..."
+echo "📋 Installing to $INSTALL_DIR/chatlog..."
 # Remove existing binary first to avoid macOS code signing issues
-if [ -f "$INSTALL_DIR/waylog" ]; then
-    rm "$INSTALL_DIR/waylog"
+if [ -f "$INSTALL_DIR/chatlog" ]; then
+    rm "$INSTALL_DIR/chatlog"
 fi
-cp target/release/waylog "$INSTALL_DIR/waylog"
-chmod +x "$INSTALL_DIR/waylog"
+cp target/release/chatlog "$INSTALL_DIR/chatlog"
+chmod +x "$INSTALL_DIR/chatlog"
 
 # Check if in PATH
 if [[ ":$PATH:" != *":$INSTALL_DIR:"* ]]; then
@@ -52,7 +52,7 @@ echo ""
 echo "✅ Installation complete!"
 echo ""
 echo "Usage:"
-echo "  waylog run claude    # Run Claude Code with auto-sync"
-echo "  waylog run gemini    # Run Gemini CLI with auto-sync"
+echo "  chatlog run claude    # Run Claude Code with auto-sync"
+echo "  chatlog run gemini    # Run Gemini CLI with auto-sync"
 echo ""
-echo "For more information, run: waylog --help"
+echo "For more information, run: chatlog --help"

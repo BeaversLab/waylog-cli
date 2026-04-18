@@ -1,4 +1,4 @@
-use crate::error::{Result, WaylogError};
+use crate::error::{Result, ChatlogError};
 use crate::providers::base::*;
 use crate::utils::path;
 use async_trait::async_trait;
@@ -80,7 +80,7 @@ impl Provider for ClaudeProvider {
                 continue;
             }
 
-            let event: ClaudeEvent = serde_json::from_str(&line).map_err(WaylogError::Json)?;
+            let event: ClaudeEvent = serde_json::from_str(&line).map_err(ChatlogError::Json)?;
 
             // Extract session metadata from first event
             if session_id.is_empty() {
@@ -169,7 +169,7 @@ impl ClaudeProvider {
             // but for a CLI syncing tool this is acceptable (or we could move it to struct).
             // The (?s) flag enables dot matches newline (multi-line matching).
             let re = regex::Regex::new(r"(?s)<ide_[a-z_]+>.*?</ide_[a-z_]+>")
-                .map_err(|e| WaylogError::Internal(e.to_string()))?;
+                .map_err(|e| ChatlogError::Internal(e.to_string()))?;
             let clean_content = re.replace_all(&content, "").to_string();
 
             if clean_content.trim().is_empty() {
@@ -363,7 +363,6 @@ struct ClaudeUsage {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::providers::base::{MessageRole, Provider};
 
     // Helper to create a user message event with content
     fn create_user_event(content: &str) -> ClaudeEvent {

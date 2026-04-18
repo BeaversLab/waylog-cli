@@ -13,7 +13,7 @@ fn main() -> std::io::Result<()> {
     let mut buffer: Vec<u8> = Default::default();
     man.render(&mut buffer)?;
 
-    std::fs::write(out_dir.join("waylog.1"), buffer)?;
+    std::fs::write(out_dir.join("chatlog.1"), buffer)?;
 
     Ok(())
 }

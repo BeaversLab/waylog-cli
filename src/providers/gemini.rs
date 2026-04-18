@@ -1,4 +1,4 @@
-use crate::error::{Result, WaylogError};
+use crate::error::{Result, ChatlogError};
 use crate::providers::base::*;
 use crate::utils::path;
 use async_trait::async_trait;
@@ -64,7 +64,7 @@ impl Provider for GeminiProvider {
     async fn parse_session(&self, file_path: &Path) -> Result<ChatSession> {
         let content = fs::read_to_string(file_path).await?;
         let session_data: GeminiSession =
-            serde_json::from_str(&content).map_err(WaylogError::Json)?;
+            serde_json::from_str(&content).map_err(ChatlogError::Json)?;
 
         let messages = session_data
             .messages

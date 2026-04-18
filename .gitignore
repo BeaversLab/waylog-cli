@@ -17,8 +17,11 @@
 .DS_Store
 Thumbs.db
 
-# WayLog test data
-.waylog/
+# ChaLog test data
+.chatlog/
 *.md.test
 *.code-workspace
 .cursor/
+
+# AI Tools
+.claude/settings.local.json

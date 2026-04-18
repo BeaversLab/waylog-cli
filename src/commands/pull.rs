@@ -1,4 +1,4 @@
-use crate::error::{Result, WaylogError};
+use crate::error::{Result, ChatlogError};
 use crate::output::Output;
 use crate::synchronizer::SyncStatus;
 use crate::{providers, session, synchronizer};
@@ -18,9 +18,9 @@ pub async fn handle_pull(
     if let Some(ref name) = provider_name {
         match providers::get_provider(name) {
             Ok(_) => {} // Provider is valid, continue
-            Err(WaylogError::ProviderNotFound(ref invalid_name)) => {
+            Err(ChatlogError::ProviderNotFound(ref invalid_name)) => {
                 output.unknown_provider(invalid_name)?;
-                return Err(WaylogError::ProviderNotFound(name.clone()));
+                return Err(ChatlogError::ProviderNotFound(name.clone()));
             }
             Err(e) => return Err(e),
         }

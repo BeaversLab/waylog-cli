@@ -1,7 +1,7 @@
 use clap::{Parser, Subcommand, ValueEnum};
 
 #[derive(Parser, Debug)]
-#[command(name = "waylog")]
+#[command(name = "chatlog")]
 #[command(about = "Automatically sync AI chat history from various CLI tools", long_about = None)]
 #[command(version)]
 pub struct Cli {

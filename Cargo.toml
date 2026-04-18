@@ -1,16 +1,16 @@
 [package]
 name = "chatlog"
-version = "0.2.4"
+version = "0.3.0"
 edition = "2021"
-authors = ["WayLog Contributors"]
+authors = ["ChatLog Contributors"]
 description = "Extract and save agent chat logs (Claude, Codex, Gemini CLI) as local Markdown files."
 license = "Apache-2.0"
-repository = "https://github.com/BeaversLab/waylog-cli"
-homepage = "https://github.com/BeaversLab/waylog-cli"
+repository = "https://github.com/BeaversLab/chatlog"
+homepage = "https://github.com/BeaversLab/chatlog"
 build = "build.rs"
 
 [[bin]]
-name = "waylog"
+name = "chatlog"
 path = "src/main.rs"
 
 [dependencies]

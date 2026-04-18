@@ -1,5 +1,5 @@
 #!/bin/bash
-# WayLog CLI Local Integration Tests
+# ChatLog CLI Local Integration Tests
 # Local integration test script for core functionality
 # Run this script locally to verify core features work correctly
 
@@ -19,7 +19,7 @@ SKIPPED=0
 TOTAL=0
 
 # Test log file
-TEST_LOG="/tmp/waylog_integration_test.log"
+TEST_LOG="/tmp/chatlog_integration_test.log"
 > "$TEST_LOG"
 
 # Print section header
@@ -87,7 +87,7 @@ check_agent() {
     fi
 }
 
-echo "WayLog CLI Integration Tests"
+echo "ChatLog CLI Integration Tests"
 echo "=============================="
 
 # 1. Basic Functionality Tests
@@ -137,8 +137,8 @@ test_case "Non-terminal output (piped, no color)" "cargo run -- --help 2>&1 | ca
 section "Logging Tests"
 
 # Check if log file is created in verbose mode
-if [ -d ".waylog/logs" ]; then
-    test_case "Log file creation (verbose mode)" "[ -f .waylog/logs/waylog.log.\$(date +%Y-%m-%d) ]" 0
+if [ -d ".chatlog/logs" ]; then
+    test_case "Log file creation (verbose mode)" "[ -f .chatlog/logs/chatlog.log.\$(date +%Y-%m-%d) ]" 0
 else
     echo -e "  ${YELLOW}⚠ SKIP${NC} (log directory not found, run with --verbose first)"
     ((SKIPPED++))
@@ -148,7 +148,7 @@ fi
 section "Build Tests"
 
 test_case "Release build" "cargo build --release" 0
-test_case "Binary exists" "[ -f target/release/waylog ]" 0
+test_case "Binary exists" "[ -f target/release/chatlog ]" 0
 
 # Summary
 echo ""

@@ -1,7 +1,7 @@
 use thiserror::Error;
 
 #[derive(Error, Debug)]
-pub enum WaylogError {
+pub enum ChatlogError {
     #[error("IO error: {0}")]
     Io(#[from] std::io::Error),
 
@@ -14,7 +14,7 @@ pub enum WaylogError {
     #[error("Path error: {0}")]
     PathError(String),
 
-    #[error("No waylog project found.\nTo start a new session, use `waylog run <AGENT>`.\nTo sync history, please run this command inside an active waylog project (.waylog folder found).")]
+    #[error("No chatlog project found.\nTo start a new session, use `chatlog run <AGENT>`.\nTo sync history, please run this command inside an active chatlog project (.chatlog folder found).")]
     ProjectNotFound,
 
     #[error("Missing required argument <AGENT>")]
@@ -30,22 +30,22 @@ pub enum WaylogError {
     Internal(String),
 }
 
-impl WaylogError {
+impl ChatlogError {
     /// Get the exit code for this error
     pub fn exit_code(&self) -> i32 {
         match self {
             // Command line usage errors
-            WaylogError::MissingAgent | WaylogError::ProviderNotFound(_) => exitcode::USAGE,
+            ChatlogError::MissingAgent | ChatlogError::ProviderNotFound(_) => exitcode::USAGE,
             // Data format errors
-            WaylogError::Json(_) => exitcode::DATAERR,
+            ChatlogError::Json(_) => exitcode::DATAERR,
             // Input file/resource errors
-            WaylogError::ProjectNotFound | WaylogError::Io(_) => exitcode::NOINPUT,
+            ChatlogError::ProjectNotFound | ChatlogError::Io(_) => exitcode::NOINPUT,
             // Service unavailable
-            WaylogError::AgentNotInstalled(_) => exitcode::UNAVAILABLE,
+            ChatlogError::AgentNotInstalled(_) => exitcode::UNAVAILABLE,
             // Internal software errors
-            WaylogError::PathError(_) | WaylogError::Internal(_) => exitcode::SOFTWARE,
+            ChatlogError::PathError(_) | ChatlogError::Internal(_) => exitcode::SOFTWARE,
             // Child process exit code (propagate directly)
-            WaylogError::ChildProcessFailed(code) => *code,
+            ChatlogError::ChildProcessFailed(code) => *code,
         }
     }
 
@@ -56,11 +56,11 @@ impl WaylogError {
     pub fn is_already_displayed(&self) -> bool {
         matches!(
             self,
-            WaylogError::MissingAgent
-                | WaylogError::ProviderNotFound(_)
-                | WaylogError::AgentNotInstalled(_)
+            ChatlogError::MissingAgent
+                | ChatlogError::ProviderNotFound(_)
+                | ChatlogError::AgentNotInstalled(_)
         )
     }
 }
 
-pub type Result<T> = std::result::Result<T, WaylogError>;
+pub type Result<T> = std::result::Result<T, ChatlogError>;

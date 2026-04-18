@@ -161,7 +161,7 @@ mod tests {
 
         async fn parse_session(&self, file_path: &Path) -> Result<ChatSession> {
             self.sessions.get(file_path).cloned().ok_or_else(|| {
-                crate::error::WaylogError::Io(std::io::Error::new(
+                crate::error::ChatlogError::Io(std::io::Error::new(
                     std::io::ErrorKind::NotFound,
                     format!("Session not found: {}", file_path.display()),
                 ))
@@ -228,8 +228,8 @@ mod tests {
         let project_dir = temp_dir.path().join("project");
         tokio::fs::create_dir_all(&project_dir).await.unwrap();
 
-        // Create .waylog/history directory (where markdown files are stored)
-        let history_dir = crate::utils::path::get_waylog_dir(&project_dir);
+        // Create .chatlog/history directory (where markdown files are stored)
+        let history_dir = crate::utils::path::get_chatlog_dir(&project_dir);
         tokio::fs::create_dir_all(&history_dir).await.unwrap();
 
         // Create a markdown file with frontmatter
@@ -490,8 +490,8 @@ message_count: 5
         let project_dir = temp_dir.path().join("project");
         tokio::fs::create_dir_all(&project_dir).await.unwrap();
 
-        // Create .waylog/history directory (where markdown files are stored)
-        let history_dir = crate::utils::path::get_waylog_dir(&project_dir);
+        // Create .chatlog/history directory (where markdown files are stored)
+        let history_dir = crate::utils::path::get_chatlog_dir(&project_dir);
         tokio::fs::create_dir_all(&history_dir).await.unwrap();
 
         // Create multiple markdown files
@@ -556,12 +556,12 @@ message_count: 7
     }
 
     #[tokio::test]
-    async fn test_restore_from_disk_no_waylog_dir() {
+    async fn test_restore_from_disk_no_chatlog_dir() {
         let temp_dir = TempDir::new().unwrap();
         let project_dir = temp_dir.path().join("project");
         tokio::fs::create_dir_all(&project_dir).await.unwrap();
 
-        // Don't create .waylog directory
+        // Don't create .chatlog directory
 
         let mock_provider = MockProvider::new("test");
         let provider = Arc::new(mock_provider);
@@ -578,8 +578,8 @@ message_count: 7
         let project_dir = temp_dir.path().join("project");
         tokio::fs::create_dir_all(&project_dir).await.unwrap();
 
-        // Create .waylog/history directory (where markdown files are stored)
-        let history_dir = crate::utils::path::get_waylog_dir(&project_dir);
+        // Create .chatlog/history directory (where markdown files are stored)
+        let history_dir = crate::utils::path::get_chatlog_dir(&project_dir);
         tokio::fs::create_dir_all(&history_dir).await.unwrap();
 
         // Create markdown file without provider in frontmatter

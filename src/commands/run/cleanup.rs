@@ -19,7 +19,7 @@ pub(crate) async fn cleanup_and_sync(
     tracker: &Arc<session::SessionTracker>,
     provider: &Arc<dyn providers::base::Provider>,
     project_path: &std::path::Path,
-    waylog_dir: &std::path::Path,
+    chatlog_dir: &std::path::Path,
     _exit_status: Option<std::process::ExitStatus>,
 ) -> Result<()> {
     // Stop the file watcher
@@ -49,7 +49,7 @@ pub(crate) async fn cleanup_and_sync(
 
                         let timestamp = session.started_at.format("%Y-%m-%d_%H-%M-%SZ");
                         let filename = format!("{}-{}-{}.md", timestamp, provider.name(), slug);
-                        waylog_dir.join(filename)
+                        chatlog_dir.join(filename)
                     };
 
                 let synced_count = tracker.get_synced_count(&session.session_id).await;

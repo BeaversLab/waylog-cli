@@ -167,6 +167,37 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "9330f8b2ff13f34540b44e946ef35111825727b38d33286ef986142615121801"
 
 [[package]]
+name = "chatlog"
+version = "0.3.0"
+dependencies = [
+ "anyhow",
+ "async-trait",
+ "chrono",
+ "clap",
+ "clap_mangen",
+ "console",
+ "dialoguer",
+ "exitcode",
+ "home",
+ "human-panic",
+ "indicatif",
+ "regex",
+ "serde",
+ "serde_json",
+ "sha2",
+ "tempfile",
+ "termcolor",
+ "thiserror 1.0.69",
+ "tokio",
+ "tracing",
+ "tracing-appender",
+ "tracing-subscriber",
+ "uuid",
+ "walkdir",
+ "which",
+]
+
+[[package]]
 name = "chrono"
 version = "0.4.44"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1404,37 +1435,6 @@ dependencies = [
  "hashbrown 0.15.5",
  "indexmap",
  "semver",
-]
-
-[[package]]
-name = "waylog"
-version = "0.2.4"
-dependencies = [
- "anyhow",
- "async-trait",
- "chrono",
- "clap",
- "clap_mangen",
- "console",
- "dialoguer",
- "exitcode",
- "home",
- "human-panic",
- "indicatif",
- "regex",
- "serde",
- "serde_json",
- "sha2",
- "tempfile",
- "termcolor",
- "thiserror 1.0.69",
- "tokio",
- "tracing",
- "tracing-appender",
- "tracing-subscriber",
- "uuid",
- "walkdir",
- "which",
 ]
 
 [[package]]

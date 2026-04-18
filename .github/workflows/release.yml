@@ -21,7 +21,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ github.ref_name }}
-          name: WayLog ${{ github.ref_name }}
+          name: ChatLog ${{ github.ref_name }}
           draft: true
           prerelease: false
           make_latest: false
@@ -49,12 +49,12 @@ jobs:
       matrix:
         include:
           - os: ubuntu-latest
-            artifact_name: waylog
-            asset_name: waylog-linux-x64
+            artifact_name: chatlog
+            asset_name: chatlog-linux-x64
             target: x86_64-unknown-linux-musl
           - os: windows-latest
-            artifact_name: waylog.exe
-            asset_name: waylog-windows-x64
+            artifact_name: chatlog.exe
+            asset_name: chatlog-windows-x64
             target: x86_64-pc-windows-msvc
 
     steps:
@@ -112,17 +112,17 @@ jobs:
           cargo build --release --target aarch64-apple-darwin
           cargo build --release --target x86_64-apple-darwin
           lipo -create \
-            target/aarch64-apple-darwin/release/waylog \
-            target/x86_64-apple-darwin/release/waylog \
-            -output waylog
-          chmod +x waylog
-          tar -czf waylog-macos-universal.tar.gz waylog
+            target/aarch64-apple-darwin/release/chatlog \
+            target/x86_64-apple-darwin/release/chatlog \
+            -output chatlog
+          chmod +x chatlog
+          tar -czf chatlog-macos-universal.tar.gz chatlog
 
       - name: Upload Release Asset
         uses: softprops/action-gh-release@v1
         with:
           upload_url: ${{ needs.create-release.outputs.upload_url }}
-          files: waylog-macos-universal.tar.gz
+          files: chatlog-macos-universal.tar.gz
 
   update-formula:
     name: Update Homebrew Formula
@@ -162,35 +162,35 @@ jobs:
           # Actually, for drafts, browser_download_url might respond 404 to curl without auth.
           # But since we are inside Actions, we can try using the GITHUB_TOKEN header.
           
-          curl -L -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" -H "Accept: application/octet-stream" -o waylog.tar.gz ${{ steps.get_release.outputs.result }}
-          echo "sha256=$(sha256sum waylog.tar.gz | cut -d ' ' -f 1)" >> $GITHUB_OUTPUT
+          curl -L -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" -H "Accept: application/octet-stream" -o chatlog.tar.gz ${{ steps.get_release.outputs.result }}
+          echo "sha256=$(sha256sum chatlog.tar.gz | cut -d ' ' -f 1)" >> $GITHUB_OUTPUT
 
       - name: Update Formula
         run: |
           cd homebrew-tap
           mkdir -p Formula
           
-          cat > Formula/waylog.rb << EOF
-          class Waylog < Formula
+          cat > Formula/chatlog.rb << EOF
+          class Chatlog < Formula
             desc "Seamlessly sync, preserve, and version-control your AI coding conversations locally"
-            homepage "https://github.com/BeaversLab/waylog-cli"
+            homepage "https://github.com/BeaversLab/chatlog"
             url "${{ steps.get_release.outputs.result }}"
             sha256 "${{ steps.shasum.outputs.sha256 }}"
             version "${{ github.ref_name }}"
             license "Apache-2.0"
 
             def install
-              bin.install "waylog"
+              bin.install "chatlog"
             end
 
             test do
-              system "#{bin}/waylog", "--version"
+              system "#{bin}/chatlog", "--version"
             end
           end
           EOF
           
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add Formula/waylog.rb
-          git commit -m "update: waylog ${{ github.ref_name }}"
+          git add Formula/chatlog.rb
+          git commit -m "update: chatlog ${{ github.ref_name }}"
           git push

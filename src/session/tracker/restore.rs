@@ -10,7 +10,7 @@ pub(crate) async fn restore_from_disk(
     project_dir: &std::path::Path,
     provider_name: &str,
 ) -> Result<HashMap<String, SessionState>> {
-    let history_dir = crate::utils::path::get_waylog_dir(project_dir);
+    let history_dir = crate::utils::path::get_chatlog_dir(project_dir);
     if !history_dir.exists() {
         return Ok(HashMap::new());
     }

@@ -80,7 +80,7 @@ impl Synchronizer {
 
                 let timestamp = session.started_at.format("%Y-%m-%d_%H-%M-%SZ");
                 let filename = format!("{}-{}-{}.md", timestamp, self.provider.name(), slug);
-                let path = path::get_waylog_dir(&self.project_dir).join(filename);
+                let path = path::get_chatlog_dir(&self.project_dir).join(filename);
 
                 (path, 0)
             };

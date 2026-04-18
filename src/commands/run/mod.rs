@@ -1,7 +1,7 @@
 mod cleanup;
 mod process;
 
-use crate::error::{Result, WaylogError};
+use crate::error::{Result, ChatlogError};
 use crate::output::Output;
 use crate::{providers, session, utils, watcher};
 use std::path::PathBuf;
@@ -20,16 +20,16 @@ pub async fn handle_run(
         Some(name) => name,
         None => {
             output.missing_agent()?;
-            return Err(WaylogError::MissingAgent);
+            return Err(ChatlogError::MissingAgent);
         }
     };
 
     // Get and validate provider before calling run_agent
     let provider = match providers::get_provider(&agent_name) {
         Ok(p) => p,
-        Err(WaylogError::ProviderNotFound(name)) => {
+        Err(ChatlogError::ProviderNotFound(name)) => {
             output.unknown_agent(&name)?;
-            return Err(WaylogError::ProviderNotFound(name));
+            return Err(ChatlogError::ProviderNotFound(name));
         }
         Err(e) => return Err(e),
     };
@@ -37,7 +37,7 @@ pub async fn handle_run(
     // Check if the tool is installed
     if !provider.is_installed() {
         output.agent_not_installed(provider.command())?;
-        return Err(WaylogError::AgentNotInstalled(
+        return Err(ChatlogError::AgentNotInstalled(
             provider.command().to_string(),
         ));
     }
@@ -56,11 +56,11 @@ async fn run_agent(
     // Provider is already validated in handle_run, so we can focus on execution
     tracing::info!("Starting {} in {}", provider.name(), project_path.display());
 
-    // Ensure .waylog/history directory exists
-    let waylog_dir = utils::path::get_waylog_dir(&project_path);
-    utils::path::ensure_dir_exists(&waylog_dir)?;
+    // Ensure .chatlog/history directory exists
+    let chatlog_dir = utils::path::get_chatlog_dir(&project_path);
+    utils::path::ensure_dir_exists(&chatlog_dir)?;
 
-    tracing::info!("Chat history will be saved to: {}", waylog_dir.display());
+    tracing::info!("Chat history will be saved to: {}", chatlog_dir.display());
 
     // Create session tracker
     let tracker =
@@ -154,12 +154,12 @@ async fn run_agent(
                     &tracker,
                     &provider,
                     &project_path,
-                    &waylog_dir,
+                    &chatlog_dir,
                     Some(status),
                 )
                 .await?;
                 // Standard exit code for SIGINT: 130
-                return Err(WaylogError::ChildProcessFailed(130));
+                return Err(ChatlogError::ChildProcessFailed(130));
             }
             // SIGTERM
             _ = async {
@@ -178,12 +178,12 @@ async fn run_agent(
                     &tracker,
                     &provider,
                     &project_path,
-                    &waylog_dir,
+                    &chatlog_dir,
                     Some(status),
                 )
                 .await?;
                 // Standard exit code for SIGTERM: 143
-                return Err(WaylogError::ChildProcessFailed(143));
+                return Err(ChatlogError::ChildProcessFailed(143));
             }
             // Child process exited normally
             status_result = child.wait() => {
@@ -195,7 +195,7 @@ async fn run_agent(
                     &tracker,
                     &provider,
                     &project_path,
-                    &waylog_dir,
+                    &chatlog_dir,
                     Some(status),
                 )
                 .await?;
@@ -228,13 +228,13 @@ async fn run_agent(
                         &tracker,
                         &provider,
                         &project_path,
-                        &waylog_dir,
+                        &chatlog_dir,
                         Some(status),
                     )
                     .await?;
                     if !status.success() {
                         let exit_code = status.code().unwrap_or(1);
-                        return Err(WaylogError::ChildProcessFailed(exit_code));
+                        return Err(ChatlogError::ChildProcessFailed(exit_code));
                     }
                     return Ok(());
                 }
@@ -248,12 +248,12 @@ async fn run_agent(
                     &tracker,
                     &provider,
                     &project_path,
-                    &waylog_dir,
+                    &chatlog_dir,
                     Some(status),
                 )
                 .await?;
                 // Standard exit code for Ctrl+C: 130 (same as Unix SIGINT)
-                return Err(WaylogError::ChildProcessFailed(130));
+                return Err(ChatlogError::ChildProcessFailed(130));
             }
             // Child process exited normally
             status_result = child.wait() => {
@@ -265,7 +265,7 @@ async fn run_agent(
                     &tracker,
                     &provider,
                     &project_path,
-                    &waylog_dir,
+                    &chatlog_dir,
                     Some(status),
                 )
                 .await?;
@@ -280,13 +280,13 @@ async fn run_agent(
             tracing::warn!("{} exited with status: {:?}", provider.name(), status);
             // Get the exit code from the status
             let exit_code = status.code().unwrap_or(1);
-            return Err(WaylogError::ChildProcessFailed(exit_code));
+            return Err(ChatlogError::ChildProcessFailed(exit_code));
         }
     }
 
     tracing::info!(
         "Session complete. Chat history saved to: {}",
-        waylog_dir.display()
+        chatlog_dir.display()
     );
     Ok(())
 }
@@ -344,7 +344,7 @@ mod tests {
 
         async fn parse_session(&self, file_path: &Path) -> Result<ChatSession> {
             self.sessions.get(file_path).cloned().ok_or_else(|| {
-                crate::error::WaylogError::Io(std::io::Error::new(
+                crate::error::ChatlogError::Io(std::io::Error::new(
                     std::io::ErrorKind::NotFound,
                     format!("Session not found: {}", file_path.display()),
                 ))
@@ -395,8 +395,8 @@ mod tests {
     async fn test_cleanup_and_sync_with_new_messages() {
         let temp_dir = TempDir::new().unwrap();
         let project_path = temp_dir.path().to_path_buf();
-        let waylog_dir = utils::path::get_waylog_dir(&project_path);
-        utils::path::ensure_dir_exists(&waylog_dir).unwrap();
+        let chatlog_dir = utils::path::get_chatlog_dir(&project_path);
+        utils::path::ensure_dir_exists(&chatlog_dir).unwrap();
 
         // Create mock provider with a session
         let mut mock_provider = MockProvider::new("test");
@@ -437,7 +437,7 @@ mod tests {
             &tracker,
             &provider,
             &project_path,
-            &waylog_dir,
+            &chatlog_dir,
             None,
         )
         .await;
@@ -445,7 +445,7 @@ mod tests {
         assert!(result.is_ok());
 
         // Verify that markdown file was created
-        let markdown_files: Vec<_> = std::fs::read_dir(&waylog_dir)
+        let markdown_files: Vec<_> = std::fs::read_dir(&chatlog_dir)
             .unwrap()
             .filter_map(|e| e.ok())
             .filter(|e| e.path().extension().and_then(|s| s.to_str()) == Some("md"))
@@ -459,8 +459,8 @@ mod tests {
     async fn test_cleanup_and_sync_with_no_new_messages() {
         let temp_dir = TempDir::new().unwrap();
         let project_path = temp_dir.path().to_path_buf();
-        let waylog_dir = utils::path::get_waylog_dir(&project_path);
-        utils::path::ensure_dir_exists(&waylog_dir).unwrap();
+        let chatlog_dir = utils::path::get_chatlog_dir(&project_path);
+        utils::path::ensure_dir_exists(&chatlog_dir).unwrap();
 
         // Create mock provider with no latest session
         let mock_provider = MockProvider::new("test");
@@ -495,7 +495,7 @@ mod tests {
             &tracker,
             &provider,
             &project_path,
-            &waylog_dir,
+            &chatlog_dir,
             None,
         )
         .await;
@@ -507,8 +507,8 @@ mod tests {
     async fn test_cleanup_and_sync_handles_errors_gracefully() {
         let temp_dir = TempDir::new().unwrap();
         let project_path = temp_dir.path().to_path_buf();
-        let waylog_dir = utils::path::get_waylog_dir(&project_path);
-        utils::path::ensure_dir_exists(&waylog_dir).unwrap();
+        let chatlog_dir = utils::path::get_chatlog_dir(&project_path);
+        utils::path::ensure_dir_exists(&chatlog_dir).unwrap();
 
         // Create mock provider that returns error for find_latest_session
         struct ErrorProvider;
@@ -528,7 +528,7 @@ mod tests {
             }
 
             async fn find_latest_session(&self, _project_path: &Path) -> Result<Option<PathBuf>> {
-                Err(crate::error::WaylogError::Io(std::io::Error::new(
+                Err(crate::error::ChatlogError::Io(std::io::Error::new(
                     std::io::ErrorKind::PermissionDenied,
                     "Permission denied",
                 )))
@@ -578,7 +578,7 @@ mod tests {
             &tracker,
             &provider,
             &project_path,
-            &waylog_dir,
+            &chatlog_dir,
             None,
         )
         .await;

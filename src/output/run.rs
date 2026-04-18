@@ -5,12 +5,12 @@ impl Output {
     /// Print missing agent error
     pub fn missing_agent(&mut self) -> io::Result<()> {
         self.error("Missing required argument <AGENT>")?;
-        writeln!(self.stderr(), "\nUsage: waylog run <AGENT> [ARGS]...\n")?;
+        writeln!(self.stderr(), "\nUsage: chatlog run <AGENT> [ARGS]...\n")?;
         writeln!(self.stderr(), "Available agents:")?;
         for provider in crate::providers::list_providers() {
             writeln!(self.stderr(), "- {}", provider)?;
         }
-        writeln!(self.stderr(), "\nExample:\n  waylog run claude")?;
+        writeln!(self.stderr(), "\nExample:\n  chatlog run claude")?;
         Ok(())
     }
 
@@ -21,7 +21,7 @@ impl Output {
         for provider in crate::providers::list_providers() {
             writeln!(self.stderr(), "- {}", provider)?;
         }
-        writeln!(self.stderr(), "\nDid you mean to run 'waylog pull'?")?;
+        writeln!(self.stderr(), "\nDid you mean to run 'chatlog pull'?")?;
         Ok(())
     }
 
@@ -30,7 +30,7 @@ impl Output {
         self.error(format!("{} is not installed or not in PATH", command))?;
         writeln!(
             self.stderr(),
-            "Please install it first before using waylog."
+            "Please install it first before using chatlog."
         )?;
         Ok(())
     }

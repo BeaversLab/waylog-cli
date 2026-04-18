@@ -1,5 +1,5 @@
 #!/bin/bash
-# WayLog CLI CI Integration Tests
+# ChatLog CLI CI Integration Tests
 # Tests that don't require local environment dependencies
 
 # Don't exit on error immediately - we want to collect all test results
@@ -121,7 +121,7 @@ test_json_output() {
     return 0
 }
 
-echo "WayLog CLI CI Integration Tests"
+echo "ChatLog CLI CI Integration Tests"
 echo "================================"
 
 # Environment check
@@ -177,7 +177,7 @@ test_case "Non-terminal output (piped)" "cargo run -- --help 2>&1 | cat | head -
 echo ""
 echo "=== Build Tests ==="
 test_case "Release build" "cargo build --release" 0
-test_case "Binary exists" "[ -f target/release/waylog ]" 0
+test_case "Binary exists" "[ -f target/release/chatlog ]" 0
 
 # Summary
 echo ""

@@ -13,7 +13,7 @@ mod watcher;
 use clap::Parser;
 use cli::{Cli, Commands, OutputFormat};
 use commands::{handle_pull, handle_run};
-use error::WaylogError;
+use error::ChatlogError;
 use output::Output;
 use std::io::Write;
 
@@ -38,13 +38,13 @@ async fn main() {
         {
             match providers::get_provider(provider_name) {
                 Ok(_) => {} // Provider is valid, continue
-                Err(WaylogError::ProviderNotFound(ref name)) => {
+                Err(ChatlogError::ProviderNotFound(ref name)) => {
                     output.error(format!("'{}' is not a recognized provider.", name))?;
                     writeln!(output.stderr(), "\nAvailable providers:")?;
                     for provider in providers::list_providers() {
                         writeln!(output.stderr(), "- {}", provider)?;
                     }
-                    return Err(WaylogError::ProviderNotFound(name.clone()));
+                    return Err(ChatlogError::ProviderNotFound(name.clone()));
                 }
                 Err(e) => return Err(e),
             }
@@ -59,7 +59,7 @@ async fn main() {
         // 3. Log new project initialization if needed
         if is_new_project {
             tracing::info!(
-                "Initializing new waylog project in: {}",
+                "Initializing new chatlog project in: {}",
                 project_root.display()
             );
         }
@@ -74,7 +74,7 @@ async fn main() {
             }
         }
 
-        Ok::<(), WaylogError>(())
+        Ok::<(), ChatlogError>(())
     }
     .await;
 
